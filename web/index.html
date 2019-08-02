@@ -7,7 +7,60 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 </head>
+<style>
+.commenting-container {
+    display: flex;
+    flex-direction: column;
+}
+</style>
 <body>
-  Hello Server!
+    <!-- <form action="/CommentSystem_Web_exploded/comment" method="post">
+        <input type="text" name="name" value="Comment1" />
+        <input type="submit" value="Generate a comment in a form"/>
+    </form> -->
+    <div class="commenting-container">
+        <textarea id="content"></textarea>
+        <input type="text" placeholder="（选填）姓名" id="name">
+        <input type="text" placeholder="（选填）邮箱" id="email">
+        <button id="button-generate-comment">Comment</button>
+    </div>
+    
+    
+    <div>Comment place:</div>
+    <div id="comment-container"></div>
+    <script>
+        document.getElementById("button-generate-comment").onclick = () => {
+            const name = document.getElementById( 'name' ).value.trim()
+            const email = document.getElementById( 'email' ).value.trim()
+            const content = document.getElementById( 'content' ).value.trim()
+            postData('http://localhost:8080/CommentSystem_Web_exploded/comment', {
+                pageUrl: null,
+                name,
+                email,
+                content
+            })
+                .then(data => console.log(JSON.stringify(data))) // JSON-string from `response.json()` call
+        .catch(error => console.error(error));
+
+            function postData(url = '', data = {}) {
+                // Default options are marked with *
+                return fetch(url, {
+                    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                    mode: 'cors', // no-cors, cors, *same-origin
+                    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                    credentials: 'same-origin', // include, *same-origin, omit
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    redirect: 'follow', // manual, *follow, error
+                    referrer: 'no-referrer', // no-referrer, *client
+                    body: JSON.stringify(data), // body data type must match "Content-Type" header
+                })
+                    .then(response => response.json()); // parses JSON response into native JavaScript objects
+            }
+        };
+    </script>
+    <script src="http://localhost:8080/CommentSystem_Web_exploded/bind.js"></script>
 </body>
 </html>

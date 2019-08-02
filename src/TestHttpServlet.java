@@ -22,7 +22,5 @@ public class TestHttpServlet extends HttpServlet {
         pw.println("<B>The selected color is: ");
         pw.println(color);
         pw.close();
-
-
     }
 }

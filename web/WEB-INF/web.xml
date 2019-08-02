@@ -4,21 +4,41 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
     <servlet>
-        <servlet-name>HelloServlet</servlet-name>
-        <servlet-class>HelloServlet</servlet-class>
+        <servlet-name>InterfaceBindServlet</servlet-name>
+        <servlet-class>InterfaceBindServlet</servlet-class>
 
     </servlet>
+    <servlet-mapping>
+        <servlet-name>InterfaceBindServlet</servlet-name>
+        <url-pattern>/bind.js</url-pattern>
+    </servlet-mapping>
+
     <servlet>
-        <servlet-name>TestHttpServlet</servlet-name>
-        <servlet-class>TestHttpServlet</servlet-class>
+        <servlet-name>InterfaceCommentServlet</servlet-name>
+        <servlet-class>InterfaceCommentServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>TestHttpServlet</servlet-name>
-        <url-pattern>/servlet/TestHttpServlet</url-pattern>
+        <servlet-name>InterfaceCommentServlet</servlet-name>
+        <url-pattern>/comment</url-pattern>
     </servlet-mapping>
 
-    <servlet-mapping>
-        <servlet-name>HelloServlet</servlet-name>
-        <url-pattern>/servlet/HelloServlet</url-pattern>
-    </servlet-mapping>
+
+<!--    <servlet>-->
+<!--        <servlet-name>HelloServlet</servlet-name>-->
+<!--        <servlet-class>HelloServlet</servlet-class>-->
+
+<!--    </servlet>-->
+<!--    <servlet>-->
+<!--        <servlet-name>TestHttpServlet</servlet-name>-->
+<!--        <servlet-class>TestHttpServlet</servlet-class>-->
+<!--    </servlet>-->
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>TestHttpServlet</servlet-name>-->
+<!--        <url-pattern>/servlet/TestHttpServlet</url-pattern>-->
+<!--    </servlet-mapping>-->
+
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>HelloServlet</servlet-name>-->
+<!--        <url-pattern>/servlet/HelloServlet</url-pattern>-->
+<!--    </servlet-mapping>-->
 </web-app>
