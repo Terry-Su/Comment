@@ -31,7 +31,7 @@ public class InterfaceCommentServlet extends HttpServlet {
         String email = payloadJSON.get( "email" ).toString();
         String content = payloadJSON.get( "content" ).toString();
         // # validate pageUrl
-        if ( pageUrl == "null" ) {
+        if ( pageUrl.startsWith( "localhost:8081" ) ) {
             Comment comment = new Comment( pageUrl, null, name, email, content, null );
 
             // # connect to database

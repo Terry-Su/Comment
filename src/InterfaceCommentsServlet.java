@@ -18,14 +18,14 @@ import java.util.ArrayList;
 public class InterfaceCommentsServlet extends HttpServlet {
 //    private ArrayList<Comment> commentListInDatabase = new ArrayList<Comment>();
 
-    public ArrayList<Comment> getCommentListInDatabase() {
+    public ArrayList<Comment> getCommentListInDatabase( String pageUrl ) {
         ArrayList<Comment> result = new ArrayList<Comment>();
         Connection connection = ConnectToMySQL.connect();
         try {
             Statement statement = connection.createStatement();
             statement.executeQuery("USE CommentSystem");
             // # query comment
-            ResultSet resultSet = statement.executeQuery("SELECT * from comments");
+            ResultSet resultSet = statement.executeQuery("SELECT * from comments WHERE pageId='" + pageUrl + "'");
             while(resultSet.next()) {
                 String pageId = resultSet.getString(1);
 
@@ -56,12 +56,12 @@ public class InterfaceCommentsServlet extends HttpServlet {
         String domElementId = request.getParameter("domElementId");
 
         // validate page url
-        if ( pageUrl == null ) {
+        if ( pageUrl.startsWith( "localhost:8081" ) ) {
             response.setContentType("application/json");
             PrintWriter pw = response.getWriter();
 
             // # search comments in database
-            ArrayList<Comment> commentListInDatabase = getCommentListInDatabase();
+            ArrayList<Comment> commentListInDatabase = getCommentListInDatabase(pageUrl);
             String jsonString = new Gson().toJson(commentListInDatabase);
             pw.print(jsonString);
             pw.close();
