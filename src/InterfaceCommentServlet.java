@@ -32,13 +32,13 @@ public class InterfaceCommentServlet extends HttpServlet {
         String content = payloadJSON.get( "content" ).toString();
         // # validate pageUrl
         if ( pageUrl == "null" ) {
-            Comment comment = new Comment( pageUrl, name, email, content, null );
+            Comment comment = new Comment( pageUrl, null, name, email, content, null );
 
             // # connect to database
             Connection connection = ConnectToMySQL.connect();
             try {
-                Statement statement = connection.createStatement();
-                statement.executeQuery("USE CommentSystem");
+                    Statement statement = connection.createStatement();
+                    statement.executeQuery("USE CommentSystem");
                 String insertString = "insert into comments values\n" +
                         "(\n" +
                         '\'' + comment.pageId + "',\n'" +
@@ -49,13 +49,10 @@ public class InterfaceCommentServlet extends HttpServlet {
                         "now()"+ "\n" +
                         ");";
                 statement.execute( insertString );
-                ResultSet resultSet = statement.executeQuery("SELECT * from comments");
-                while(resultSet.next())
-                    System.out.println(resultSet.getString(3) + resultSet.getString(4) + resultSet.getString(5));
-                PrintWriter pw = response.getWriter();
-                pw.print("success");
                 connection.close();
-                pw.close();
+                response.setContentType("application/json");
+                PrintWriter pw = response.getWriter();
+                pw.print("{}");
             } catch( SQLException e ) {
                 throw new IllegalStateException(e);
             }

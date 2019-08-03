@@ -6,12 +6,30 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <script src="https://unpkg.com/preact@7.1.0"></script>
 </head>
 <style>
+    /* # commenting */
 .commenting-container {
+    width: 100%;
+}
+
+/* # comments */
+.comments {
     display: flex;
     flex-direction: column;
 }
+    .comments .comment-item {
+        margin-top: 20px;
+        border: 1px solid grey;
+    }
+    .comments .comment-item .person-info {
+        border-bottom: 1px solid grey;
+    }
+    .comments .comment-item .person-info .createTime {
+        margin-left: 10px;
+        color: grey;
+    }
 </style>
 <body>
     <!-- <form action="/CommentSystem_Web_exploded/comment" method="post">
@@ -24,43 +42,89 @@
         <input type="text" placeholder="（选填）邮箱" id="email">
         <button id="button-generate-comment">Comment</button>
     </div>
-    
-    
-    <div>Comment place:</div>
-    <div id="comment-container"></div>
-    <script>
-        document.getElementById("button-generate-comment").onclick = () => {
-            const name = document.getElementById( 'name' ).value.trim()
-            const email = document.getElementById( 'email' ).value.trim()
-            const content = document.getElementById( 'content' ).value.trim()
-            postData('http://localhost:8080/CommentSystem_Web_exploded/comment', {
-                pageUrl: null,
-                name,
-                email,
-                content
-            })
-                .then(data => console.log(JSON.stringify(data))) // JSON-string from `response.json()` call
-        .catch(error => console.error(error));
 
-            function postData(url = '', data = {}) {
-                // Default options are marked with *
-                return fetch(url, {
-                    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                    mode: 'cors', // no-cors, cors, *same-origin
-                    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                    credentials: 'same-origin', // include, *same-origin, omit
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // 'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    redirect: 'follow', // manual, *follow, error
-                    referrer: 'no-referrer', // no-referrer, *client
-                    body: JSON.stringify(data), // body data type must match "Content-Type" header
-                })
-                    .then(response => response.json()); // parses JSON response into native JavaScript objects
+    <div id="comments-container">
+<!--        <div class="comment">-->
+<!--            <div class="person-info"></div>-->
+<!--            <div class="content"></div>-->
+<!--        </div>-->
+    </div>
+    
+
+
+    <script>
+        const { h } = preact
+        class Comments extends preact.Component {
+            state = { comments: [] }
+            componentDidMount() {
+                this.refreshComments()
+                this.monitorAddComment()
             }
-        };
+
+            async refreshComments() {
+                const comments = await fetch('/CommentSystem_Web_exploded/comments').then( response => response.json() )
+                this.setState( { comments } )
+            }
+
+            monitorAddComment() {
+                document.getElementById("button-generate-comment").onclick = () => {
+                    const nameElement = document.getElementById( 'name' )
+                    const emailElement = document.getElementById( 'email' )
+                    const contentElement = document.getElementById( 'content' )
+                    const name = nameElement.value.trim()
+                    const email = document.getElementById( 'email' ).value.trim()
+                    const content = document.getElementById( 'content' ).value.trim()
+                    postData('/CommentSystem_Web_exploded/comment', {
+                        pageUrl: null,
+                        name,
+                        email,
+                        content
+                    })
+                        .then(() => {
+                        alert( 'Comment Successfully!' )
+                        this.refreshComments()
+                        // # clean inputs
+                        nameElement.value = ''
+                        emailElement.value = '';
+                        contentElement.value = '';
+                    })
+                };
+            }
+
+            render() {
+                return h( 'div', { class: 'comments' },
+                    this.state.comments.length,
+                    this.state.comments.reverse().map( comment => h( 'div', { class: 'comment-item' },
+                        h( 'div', { class: 'person-info' },
+                            h( 'span', { class: 'name' }, comment.name || '读者'),
+                            h( 'span', { class: 'createTime' }, new Date(comment.createTime).toLocaleTimeString() ),
+                        ),
+                        h( 'div', { class: 'content' }, comment.content )
+                    ) )
+                )
+            }
+        }
+        preact.render && preact.render( h(Comments), document.getElementById('comments-container') )
+
+        function postData(url = '', data = {}) {
+            // Default options are marked with *
+            return fetch(url, {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, cors, *same-origin
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                redirect: 'follow', // manual, *follow, error
+                referrer: 'no-referrer', // no-referrer, *client
+                body: JSON.stringify(data), // body data type must match "Content-Type" header
+            })
+                .then(response => response.json()); // parses JSON response into native JavaScript objects
+        }
+
     </script>
-    <script src="http://localhost:8080/CommentSystem_Web_exploded/bind.js"></script>
+    <!-- <script src="http://localhost:8080/CommentSystem_Web_exploded/bind.js"></script> -->
 </body>
 </html>
